@@ -5,12 +5,28 @@ const { uploader } = require("../Services/uploader")
 module.exports = {
 
     getProduct: async (req, res) => {
-        try {
-            const getProductDB = await ProductModel.find();
-            res.status(200).send(getProductDB);
-        } catch (err) {
-            res.status(500).send(err);
-        }
+        const currentPage = parseInt(req.query.currentPage);
+        const perPage = parseInt(req.query.perPage);
+
+        let totalData;
+
+        await ProductModel.find().countDocuments()
+            .then((count) => {
+                totalData = count;
+                return ProductModel.find().skip(currentPage * perPage).limit(perPage).sort({ createdAt: -1 });
+            })
+            .then((results) => {
+                res.status(200).send({
+                    message: results.length > 0 ? 'Get Data Succesful' : 'Empty Data',
+                    data: results,
+                    total_data: totalData,
+                    per_page: perPage,
+                    current_page: currentPage
+                });
+            })
+            .catch((err) => {
+                res.status(500).send(err);
+            })
     },
 
     addProduct: async (req, res) => {
@@ -26,13 +42,17 @@ module.exports = {
                 const data = req.body;
                 data.image = imagePath;
 
-                const productModel = new ProductModel(data);
-                try {
-                    productModel.save();
-                    res.status(200).send({ message: "Success!" });
-                } catch (err) {
-                    res.status(500).send(err);
-                }
+                const productModel = new ProductModel(data)
+                productModel.save()
+                    .then((results) => {
+                        res.status(200).send({
+                            message: 'Add Data Successful',
+                            data: results,
+                        });
+                    })
+                    .catch((err) => {
+                        res.status(500).send(err);
+                    });
             });
         } catch (err) {
             console.log(err);
