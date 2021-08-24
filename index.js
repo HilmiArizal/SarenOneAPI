@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 
+
 app.get('/', (req, res) => {
     res.send(`SERVER RUNNING IN PORT ${PORT}`);
 });
