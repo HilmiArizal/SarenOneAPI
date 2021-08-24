@@ -85,12 +85,14 @@ module.exports = {
 
                 ProductModel.findById(id)
                     .then((product) => {
-                        if (!product.image) {
-                            return null
-                        } else {
-                            fs.unlinkSync('./public' + product.image);
+                        if (image) {
+                            if (!product.image) {
+                                return null;
+                            } else {
+                                fs.unlinkSync('./public' + product.image);
+                            }
+                            return Object.assign(product, data);
                         }
-                        return Object.assign(product, data);
                     })
                     .then((data) => {
                         return data.save();
