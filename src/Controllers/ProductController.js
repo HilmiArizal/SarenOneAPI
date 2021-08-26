@@ -5,6 +5,8 @@ const fs = require('fs');
 
 module.exports = {
 
+    // ============ ADMIN =============
+
     getProduct: async (req, res) => {
         const search = req.query.search;
         const currentPage = parseInt(req.query.currentPage);
@@ -123,6 +125,32 @@ module.exports = {
                         fs.unlinkSync('./public' + product.image);
                         res.status(200).send({ message: "Delete Data Successful", results });
                     })
+            })
+            .catch((err) => {
+                res.status(500).send(err);
+            })
+    },
+
+    // ============ USER =============
+
+    getAllProduct: async (req, res) => {
+        await ProductModel.find()
+            .then((product) => {
+                res.status(200).send({
+                    message: 'Get All Data Successful',
+                    product
+                });
+            }).catch((err) => {
+                res.status(500).send(err);
+            })
+    },
+
+    getProductByProductId: async (req, res) => {
+        const id = req.params.id;
+
+        await ProductModel.findById(id)
+            .then((product) => {
+                res.status(200).send({ message: "Get Data Successful", product });
             })
             .catch((err) => {
                 res.status(500).send(err);
