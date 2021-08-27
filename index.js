@@ -21,7 +21,8 @@ app.get('/', (req, res) => {
     res.send(`SERVER RUNNING IN PORT ${PORT}`);
 });
 
-const { ProductRouter } = require('./src/Routers');
+const { ProductRouter, AuthRouter } = require('./src/Routers');
+app.use('/auth', AuthRouter);
 app.use('/product', ProductRouter);
 
 
