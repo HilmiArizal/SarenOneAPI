@@ -58,6 +58,39 @@ module.exports = {
         } catch (err) {
             console.log(err);
         }
+    },
+
+    changePassword: async (req, res) => {
+        try {
+            const id = req.params.id;
+
+            const oldPassword = req.body.oldPassword;
+            const newPassword = req.body.newPassword;
+
+            await UserModel.findById(id)
+                .then((user) => {
+                    if (user.password === oldPassword) {
+                        user.password = newPassword;
+                        return Object.assign(user);
+                    }
+                })
+                .then((data) => {
+                    return data.save();
+                })
+                .then((updateData) => {
+                    res.status(200).send({
+                        message: 'Update Data Successful',
+                        updateData
+                    });
+                })
+                .catch((err) => {
+                    res.status(200).send({
+                        message: "Password old it's a wrong!"
+                    });
+                })
+        } catch (err) {
+            console.log(err);
+        }
     }
 
 }
