@@ -2,6 +2,7 @@ const router = require('express').Router();
 const { TeamController } = require('../Controllers');
 
 
+router.get('/getListTeam', TeamController.getListTeam);
 router.get('/getTeam', TeamController.getTeam);
 router.post('/addTeam', TeamController.addTeam);
 router.put('/editTeam/:id', TeamController.editTeam);

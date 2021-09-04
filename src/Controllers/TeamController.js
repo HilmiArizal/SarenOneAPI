@@ -5,12 +5,46 @@ const fs = require("fs");
 
 module.exports = {
 
+    getListTeam: async (req, res) => {
+        const search = req.query.search;
+        const currentPage = parseInt(req.query.currentPage);
+        const perPage = parseInt(req.query.perPage);
+        let totalData;
+
+        function escapeRegex(text) {
+            return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+        }
+
+        await TeamModel.find().countDocuments()
+            .then((count) => {
+                totalData = count;
+                const regex = new RegExp(escapeRegex(search), "gi");
+                if (!search) {
+                    return TeamModel.find().skip(currentPage * perPage).limit(perPage);
+                } else {
+                    return TeamModel.find({ $or: [{ fullname: regex }] }).skip(currentPage * perPage).limit(perPage);
+                }
+            })
+            .then((results) => {
+                res.status(200).send({
+                    message: results.length > 0 ? 'Get Data Successful' : 'Empty Data',
+                    data: results,
+                    total_data: totalData,
+                    per_page: perPage,
+                    current_page: currentPage
+                });
+            })
+            .catch((err) => {
+                res.status(500).send(err);
+            })
+    },
+
     getTeam: async (req, res) => {
         try {
             await TeamModel.find()
                 .then((data) => {
                     res.status(200).send({
-                        message: 'Get Data Successfull',
+                        message: 'Get Data Successful',
                         data
                     });
                 })
