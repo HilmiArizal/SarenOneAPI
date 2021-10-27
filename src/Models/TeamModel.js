@@ -20,6 +20,9 @@ const teamSchema = new mongoose.Schema(
         },
         motto: {
             type: String,
+        },
+        role:{
+            type: String
         }
     },
     {
