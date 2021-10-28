@@ -25,7 +25,10 @@ const userModel = new mongoose.Schema(
             type: String,
         },
         role: {
-            type: String
+            type: Number
+        },
+        verification: {
+            type: Number
         }
     },
     {

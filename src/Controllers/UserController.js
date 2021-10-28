@@ -91,6 +91,46 @@ module.exports = {
         } catch (err) {
             console.log(err);
         }
+    },
+
+    getAllUser: async (req, res) => {
+        await UserModel.find()
+        .then((results) => {
+            res.status(200).send({
+                message: results.length > 0 ? 'Get Data Successful' : 'Empty Data',
+                data: results
+            })
+        })
+        .catch((err) => {
+            res.status(500).send(err);
+        })
+    },
+
+    getUser: async (req, res) => {
+        const search = req.query.search;
+
+        function escapeRegex(text) {
+            return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+        }
+
+        await UserModel.find().countDocuments()
+            .then((count) => {
+                const regex = new RegExp(escapeRegex(search), "gi");
+                if (!search) {
+                    return UserModel.find().sort({ createdAt: -1 });
+                } else {
+                    return UserModel.find({ $or: [{ username: regex }] }).sort({ createdAt: -1 });
+                }
+            })
+            .then((results) => {
+                res.status(200).send({
+                    message: results.length > 0 ? 'Get Data Successful' : 'Empty Data',
+                    data: results
+                });
+            })
+            .catch((err) => {
+                res.status(500).send(err);
+            })
     }
 
 }

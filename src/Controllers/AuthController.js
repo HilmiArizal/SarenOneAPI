@@ -1,5 +1,5 @@
-const { UserModel } = require('../Models');
 
+const { UserModel } = require('../Models');
 
 module.exports = {
 
@@ -13,7 +13,8 @@ module.exports = {
                 nickname: null,
                 img: null,
                 division: null,
-                role: 'admin'
+                role: 3,
+                verification: 0
             });
 
             await addUser.save()
